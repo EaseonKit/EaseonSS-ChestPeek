@@ -10,7 +10,7 @@ import java.io.IOException;
 public class ConfigManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final File CONFIG_DIR = new File("config/easeon");
-    private static final File CONFIG_FILE = new File(CONFIG_DIR, "easeon.chestpeek.json");
+    private static final File CONFIG_FILE = new File(CONFIG_DIR, "easeon.ss.chestpeek.json");
 
     private boolean enabled = true;
     private int requiredOpLevel = 2;
