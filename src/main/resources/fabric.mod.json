@@ -1,0 +1,27 @@
+{
+	"schemaVersion": 1,
+	"id": "easeon-ss-chestpeek",
+	"version": "${version}",
+	"name": "EaseonSS - ChestPeek",
+	"description": "Click through item frames and signs to access chests behind them directly.",
+	"authors": [
+		"Teron"
+	],
+	"license": "CC0-1.0",
+	"icon": "assets/easeon/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.easeon.ss.chestpeek.Easeon"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.17.2",
+		"minecraft": "~1.21.9",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
