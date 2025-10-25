@@ -1,34 +1,37 @@
 package com.easeon.ss.chestpeek;
 
+import com.easeon.ss.core.api.common.base.BaseToggleModule;
+import com.easeon.ss.core.api.definitions.enums.EventPhase;
+import com.easeon.ss.core.api.events.EaseonBlockUse;
+import com.easeon.ss.core.api.events.EaseonBlockUse.BlockUseTask;
+import com.easeon.ss.core.api.events.EaseonEntityInteract;
+import com.easeon.ss.core.api.events.EaseonEntityInteract.EntityInteractTask;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class Easeon implements ModInitializer {
-    public static final String MOD_ID = "easeon-chestpeek";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    public static final ConfigManager CONFIG = new ConfigManager();
+public class Easeon extends BaseToggleModule implements ModInitializer {
+    private BlockUseTask blockUseTask;
+    private EntityInteractTask entityInteractTask;
+    public static Easeon instance;
+
+    public Easeon() {
+        instance = this;
+    }
 
     @Override
     public void onInitialize() {
-        LOGGER.info("Chest Peek Mod Initializing...");
+        logger.info("Initialized!");
+    }
 
-        // Config 로드
-        CONFIG.load();
-
-        // 명령어 등록
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            EaseonCommand.register(dispatcher);
-            LOGGER.info("Chest Peek commands registered!");
-        });
-
-        // 이벤트 등록
-        UseEntityCallback.EVENT.register(ChestPeekHandler::useEntityCallback);
-        UseBlockCallback.EVENT.register(ChestPeekHandler::useBlockCallback);
-
-        LOGGER.info("Chest Peek Mod Initialized!");
+    public void updateTask() {
+        if (config.enabled && blockUseTask == null && entityInteractTask == null) {
+            blockUseTask = EaseonBlockUse.register(EventPhase.BEFORE, ChestPeekHandler::useBlockCallback);
+            entityInteractTask = EaseonEntityInteract.register(EventPhase.BEFORE, ChestPeekHandler::useEntityCallback);
+        }
+        if (!config.enabled && blockUseTask != null && entityInteractTask != null) {
+            EaseonBlockUse.unregister(blockUseTask);
+            EaseonEntityInteract.unregister(entityInteractTask);
+            blockUseTask = null;
+            entityInteractTask = null;
+        }
     }
 }
