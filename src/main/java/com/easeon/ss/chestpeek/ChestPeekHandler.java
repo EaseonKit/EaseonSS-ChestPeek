@@ -1,5 +1,6 @@
 package com.easeon.ss.chestpeek;
 
+import com.easeon.ss.core.helper.BlockHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.EnderChestBlock;
@@ -27,12 +28,11 @@ public class ChestPeekHandler {
             return ActionResult.PASS;
 
         var behind = itemFrame.getBlockPos().offset(itemFrame.getHorizontalFacing().getOpposite());
-        var blockState = world.getBlockState(behind);
-        var blockBehind = blockState.getBlock();
+        var state = world.getBlockState(behind);
 
-        if (blockBehind instanceof ChestBlock || blockBehind instanceof EnderChestBlock) {
+        if (BlockHelper.of(state.getBlock(), ChestBlock.class, EnderChestBlock.class)) {
             var facing = itemFrame.getHorizontalFacing().getOpposite();
-            return OpenChest(blockState, world, player, Vec3d.ofCenter(behind), facing, behind);
+            return OpenChest(state, world, player, Vec3d.ofCenter(behind), facing, behind);
         }
 
         return OpenBarrel(world, player, behind);
@@ -44,15 +44,14 @@ public class ChestPeekHandler {
         var block = state.getBlock();
 
         if (world.isClient()) return ActionResult.SUCCESS;
-        if (player.isSneaking() || !(block instanceof WallSignBlock))
+        if (player.isSneaking() || BlockHelper.not(block, WallSignBlock.class))
             return ActionResult.PASS;
 
         var facing = state.get(WallSignBlock.FACING);
         var behind = pos.offset(facing.getOpposite());
         var blockState = world.getBlockState(behind);
-        var blockBehind = blockState.getBlock();
 
-        if (blockBehind instanceof ChestBlock || blockBehind instanceof EnderChestBlock) {
+        if (BlockHelper.of(blockState.getBlock(), ChestBlock.class, EnderChestBlock.class)) {
             return OpenChest(blockState, world, player, Vec3d.ofCenter(behind), facing, behind);
         }
 
