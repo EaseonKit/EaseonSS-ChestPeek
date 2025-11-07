@@ -11,11 +11,6 @@ import net.fabricmc.api.ModInitializer;
 public class Easeon extends BaseToggleModule implements ModInitializer {
     private BlockUseTask blockUseTask;
     private EntityInteractTask entityInteractTask;
-    public static Easeon instance;
-
-    public Easeon() {
-        instance = this;
-    }
 
     @Override
     public void onInitialize() {

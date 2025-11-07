@@ -1,10 +1,8 @@
 package com.easeon.ss.chestpeek;
 
-import com.easeon.ss.core.helper.BlockHelper;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.EnderChestBlock;
-import net.minecraft.block.WallSignBlock;
+import com.easeon.ss.core.wrapper.EaseonPlayer;
+import com.easeon.ss.core.wrapper.EaseonWorld;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
@@ -19,8 +17,11 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class ChestPeekHandler {
-    public static ActionResult useEntityCallback(ServerPlayerEntity player, World world, Entity entity, Hand hand) {
+    public static ActionResult useEntityCallback(ServerPlayerEntity mcPlayer, World mcWorld, Entity entity, Hand hand) {
+        var world = new EaseonWorld(mcWorld);
         if (world.isClient()) return ActionResult.SUCCESS;
+
+        var player = new EaseonPlayer(mcPlayer);
         if (hand != Hand.MAIN_HAND || player.isSneaking() || !(entity instanceof ItemFrameEntity itemFrame))
             return ActionResult.PASS;
 
@@ -30,32 +31,35 @@ public class ChestPeekHandler {
         var behind = itemFrame.getBlockPos().offset(itemFrame.getHorizontalFacing().getOpposite());
         var state = world.getBlockState(behind);
 
-        if (BlockHelper.of(state.getBlock(), ChestBlock.class, EnderChestBlock.class)) {
+        if (state.of(ChestBlock.class, EnderChestBlock.class)) {
             var facing = itemFrame.getHorizontalFacing().getOpposite();
-            return OpenChest(state, world, player, Vec3d.ofCenter(behind), facing, behind);
+            return OpenChest(state.get(), world.get(), player.get(), Vec3d.ofCenter(behind), facing, behind);
         }
 
-        return OpenBarrel(world, player, behind);
+        return OpenBarrel(world.get(), player.get(), behind);
     }
 
-    public static ActionResult useBlockCallback(ServerPlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+    public static ActionResult useBlockCallback(ServerPlayerEntity mcPlayer, World mcWorld, Hand hand, BlockHitResult hitResult) {
+        var world = new EaseonWorld(mcWorld);
+        if (world.isClient()) return ActionResult.SUCCESS;
+
+        var player = new EaseonPlayer(mcPlayer);
+        if (player.isSneaking()) return ActionResult.PASS;
+
         var pos = hitResult.getBlockPos();
         var state = world.getBlockState(pos);
-        var block = state.getBlock();
-
-        if (world.isClient()) return ActionResult.SUCCESS;
-        if (player.isSneaking() || BlockHelper.not(block, WallSignBlock.class))
+        if (state.not(WallSignBlock.class))
             return ActionResult.PASS;
 
         var facing = state.get(WallSignBlock.FACING);
         var behind = pos.offset(facing.getOpposite());
         var blockState = world.getBlockState(behind);
 
-        if (BlockHelper.of(blockState.getBlock(), ChestBlock.class, EnderChestBlock.class)) {
-            return OpenChest(blockState, world, player, Vec3d.ofCenter(behind), facing, behind);
+        if (blockState.of(ChestBlock.class, EnderChestBlock.class)) {
+            return OpenChest(blockState.get(), world.get(), player.get(), Vec3d.ofCenter(behind), facing, behind);
         }
 
-        return OpenBarrel(world, player, behind);
+        return OpenBarrel(world.get(), player.get(), behind);
     }
 
     private static ActionResult OpenChest(
