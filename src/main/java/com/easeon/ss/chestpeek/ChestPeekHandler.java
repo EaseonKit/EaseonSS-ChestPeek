@@ -46,24 +46,22 @@ public class ChestPeekHandler {
 
     private static ActionResult OpenChest(EaseonWorld world, EaseonPlayer player, Hand hand, Direction direction, BlockPos behind)
     {
-        ActionResult result = ActionResult.PASS;
-
         var block = world.getBlockState(behind);
         if (block.of(ChestBlock.class, EnderChestBlock.class)) {
             var actionResult = block.onUse(world, player, new BlockHitResult(Vec3d.ofCenter(behind), direction, behind, false));
-            if (actionResult.isAccepted())
-                result = ActionResult.SUCCESS;
+            if (actionResult.isAccepted()) {
+                player.swingHand(hand);
+                return ActionResult.SUCCESS;
+            }
         }
 
         var blockEntity = world.getBlockEntity(behind);
         if (blockEntity instanceof LootableContainerBlockEntity chest) {
             player.openHandledScreen(chest);
-            result = ActionResult.SUCCESS;
+            player.swingHand(hand);
+            return ActionResult.SUCCESS;
         }
 
-        if (result == ActionResult.SUCCESS)
-            player.swingHand(hand);
-
-        return result;
+        return ActionResult.PASS;
     }
 }
