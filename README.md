@@ -1,37 +1,41 @@
 ## 🌿 Easeon - ChestPeek
-**Minecraft:** `1.21.10`, `1.21.9`  
-**Loader:** `Fabric`  
-**Side:** `Server-Side`, `Singleplayer`
+
+**This mod requires <a href="https://modrinth.com/mod/easeon-ss-core" target="_blank">EaseonSS-Core</a>**
+
 
 ## Overview
 ChestPeek is a server-side Fabric mod that allows players to access chests directly through item frames or wall signs attached to them.  
-Simply click on a decorative item frame or sign placed on a chest to instantly open it without removing your decorations.  
-Perfect for organized storage systems and aesthetic builds.
+Simply click on a decorative item frame or sign placed on a chest to instantly open it without removing your decorations.
+
+<details>
+<summary>Preview</summary>
+
+![showcase](https://github.com/EaseonKit/EaseonSS-ChestPeek/blob/main/showcase.webp?raw=true)
+</details>
+
+
+
+
+<br/>  
 
 ## Features
-- **Click-Through Item Frames**: Right-click item frames to access chests behind them
-- **Wall Sign Integration**: Click wall signs to open containers behind them
 - **Ender Chest Compatible**: Works with ender chests and all container types
 - **Shift Override**: Hold Shift to interact with frames/signs normally
-- **Server-Side Only**: No client installation required
+
+<br/>
 
 ## Commands
 All commands require OP level 2 permission.
 
-**View Current Status:**
-```
-/easeon chestpeek
-```
-**Enable ChestPeek:**
-```
-/easeon chestpeek on
-```
-**Disable ChestPeek:**
-```
-/easeon chestpeek off
-```
+| Command                      | Description          |
+| ---------------------------- | -------------------- |
+| /easeon chestpeek            | View current status  |
+| /easeon chestpeek <on/off>   | Enable/disable       |
 
-## Configuration
+
+<details>
+<summary>Configuration</summary>
+
 ```json
 {
   "enabled": true,
@@ -39,3 +43,13 @@ All commands require OP level 2 permission.
 }
 ```
 `config/easeon/easeon.ss.chestpeek.json`
+
+</details>
+
+<br/>
+
+---
+
+### 🔗 More Easeon Mods
+Looking for more lightweight and practical mods in the same style?  
+Check out other Easeon series mods <a href="https://modrinth.com/user/Teron" target="_blank" rel="noopener noreferrer">here</a>.
