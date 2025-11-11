@@ -23,8 +23,8 @@ public class ChestPeekHandler {
         if (itemFrame.getHeldItemStack().isEmpty() && !player.getStackInHand(hand).isEmpty())
             return ActionResult.PASS;
 
-        var facing = itemFrame.getHorizontalFacing().getOpposite();
-        var behind = itemFrame.getBlockPos().offset(itemFrame.getHorizontalFacing().getOpposite());
+        final var facing = itemFrame.getHorizontalFacing().getOpposite();
+        final var behind = itemFrame.getBlockPos().offset(itemFrame.getHorizontalFacing().getOpposite());
 
         return OpenChest(world, player, hand, facing, behind);
     }
@@ -33,20 +33,20 @@ public class ChestPeekHandler {
         if (world.isClient()) return ActionResult.SUCCESS;
         if (player.isSneaking()) return ActionResult.PASS;
 
-        var pos = hit.getBlockPos();
-        var state = world.getBlockState(pos);
+        final var pos = hit.getBlockPos();
+        final var state = world.getBlockState(pos);
         if (state.not(WallSignBlock.class))
             return ActionResult.PASS;
 
-        var facing = state.get(WallSignBlock.FACING);
-        var behind = pos.offset(facing.getOpposite());
+        final var facing = state.get(WallSignBlock.FACING);
+        final var behind = pos.offset(facing.getOpposite());
 
         return OpenChest(world, player, hand, facing, behind);
     }
 
     private static ActionResult OpenChest(EaseonWorld world, EaseonPlayer player, Hand hand, Direction direction, BlockPos behind)
     {
-        var block = world.getBlockState(behind);
+        final var block = world.getBlockState(behind);
         if (block.of(ChestBlock.class, EnderChestBlock.class)) {
             var actionResult = block.onUse(world, player, new BlockHitResult(Vec3d.ofCenter(behind), direction, behind, false));
             if (actionResult.isAccepted()) {
@@ -55,7 +55,7 @@ public class ChestPeekHandler {
             }
         }
 
-        var blockEntity = world.getBlockEntity(behind);
+        final var blockEntity = world.getBlockEntity(behind);
         if (blockEntity instanceof LootableContainerBlockEntity chest) {
             player.openHandledScreen(chest);
             player.swingHand(hand);
